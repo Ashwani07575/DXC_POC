@@ -1,0 +1,108 @@
+<div>
+	<div class="form-group">
+		<label for="name">Name</label>
+		<input type="text" id="name" name="name" class="form-control" value="" required/>
+	</div>
+	<div class="form-group">
+		<label for="passport_number">Passport number</label>
+		<input type="text" id="passport_number" name="passport_number" class="form-control" value="" required/>
+	</div>
+	<div class="form-group">
+		<label for="nationality">Nationality</label>
+		<!-- <input type="dropdown" id="nationality" name="nationality" class="form-control" value="" /> -->
+		<select id="nationality" name="nationality" class="form-control" required>
+			<option value=""></option>
+			<option value="THA">THA</option>
+			<option value="BHU">BHU</option>
+			<option value="MY">MY</option>
+			<option value="SG">SG</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<label for="dob">Dob</label>
+		<input type="date" id="dob" name="dob" class="form-control" value="" required/>
+	</div>
+	<script>
+		console.log("Full Classification...");
+		/* Utility function that fills the form with the data received from the kogito runtime */
+		function setFormData(data) {
+			console.log("setFormData");
+			if (!data) {
+				return;
+			}
+			document.getElementById("name").value = data?.name ?? "";
+			document.getElementById("passport_number").value = data?.passport_number ?? "";
+			document.getElementById("nationality").value = data?.nationality ?? "";
+			document.getElementById("dob").value = data?.dob ?? "";
+		}
+		/* Utility function to generate the expected form output as a json object */
+		function getFormData() {
+			console.log("getFormData");
+			const formData = {};
+
+			formData.name = document.getElementById("name").value;
+			formData.passport_number = document.getElementById("passport_number").value;
+			formData.nationality = document.getElementById("nationality").value;
+			formData.dob = document.getElementById("dob").value;
+
+			const passport = {
+					"passport_number": formData.passport_number,
+					"nationality": formData.nationality
+			};
+
+			const person = {
+				"name": formData.name,
+				"passport": passport,
+				"dob": formData.dob
+			};
+
+			const data = {"person": person, "name": formData.name};
+
+			console.log(person);
+
+			return data;
+			// return formData;
+		}
+
+		/* Utility function to validate the form on the 'beforeSubmit' Lifecycle Hook */
+		function validateForm() {
+			console.log("validateForm");
+		}
+		/*
+            Call to the Kogito console form engine. It will establish the connection with the console embeding the form
+            and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
+            The `window.Form.openForm` call expects an object with the following entries:
+                - onOpen: Callback that will be called after the connection with the console is established. The callback
+                will receive the following arguments:
+                    - data: the data to be bound into the form
+                    - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
+        */
+		const formApi = window.Form.openForm({
+			onOpen: (data, context) => {
+				console.log("onOpening");
+				setFormData(data);
+			},
+		});
+		/*
+            Form Lifecycle Hook that will be executed before the form is submitted.
+            Throwing an error will stop the form submit. Usually should be used to validate the form.
+        */
+		formApi.beforeSubmit = () => {
+			console.log("beforeSubmit");
+			validateForm();
+		};
+		/*
+            Form Lifecycle Hook that will be executed after the form is submitted.
+            It will receive a response object containing the `type` flag indicating if the submit has been successful and `info` with extra information about the submit result.
+        */
+		formApi.afterSubmit = (response) => {
+			console.log("afterSubmit");
+		};
+		/* Generates the expected form output object to be posted */
+		formApi.getFormData = () => getFormData();
+
+		console.log("Printing formApi Data ... ");
+		console.log(formApi.getFormData);
+
+	</script>
+</div>
