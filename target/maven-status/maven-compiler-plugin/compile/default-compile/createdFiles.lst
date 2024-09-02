@@ -1,0 +1,5 @@
+com\example\travels\rest\ExternalApiClient.class
+META-INF\panache-archive.marker
+com\example\travels\quarkus\Traveler.class
+com\example\travels\script\ErrorHandlingScript.class
+com\example\travels\services\ExternalApiService.class

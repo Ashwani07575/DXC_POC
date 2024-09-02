@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2019-09/schema","type":"object","properties":{"overall":{"type":"string"},"person":{},"resultS1":{},"resultS2":{},"src":{"type":"string"}}}
